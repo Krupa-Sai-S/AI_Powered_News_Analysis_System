@@ -12,7 +12,8 @@ import {
   FileText,
   Share2,
   Globe,
-  Lock
+  Lock,
+  BarChart3
 } from 'lucide-react';
 import { format } from 'date-fns';
 
