@@ -10,7 +10,6 @@ import { AlertsPanel } from './AlertsPanel';
 import { WeatherWidget } from './WeatherWidget';
 import { AnalyticsChart } from './AnalyticsChart';
 import { QuickActions } from './QuickActions';
-import { MapView } from './MapView';
 import { NotificationCenter } from './NotificationCenter';
 import { ScheduleModal } from './ScheduleModal';
 import { 
@@ -32,8 +31,6 @@ import {
   Activity,
   Users,
   Eye,
-  Settings,
-  Map,
   Bookmark,
   Archive,
   Zap,
@@ -54,7 +51,6 @@ export const Dashboard: React.FC = () => {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [showAlerts, setShowAlerts] = useState(true);
   const [showShareModal, setShowShareModal] = useState(false);
-  const [showMapView, setShowMapView] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [bookmarkedClusters, setBookmarkedClusters] = useState<string[]>([]);
@@ -181,10 +177,6 @@ export const Dashboard: React.FC = () => {
     setShowShareModal(true);
   };
 
-  const refreshData = () => {
-    processNewsFeed(selectedDate);
-  };
-
   const toggleBookmark = (clusterId: string) => {
     setBookmarkedClusters(prev => 
       prev.includes(clusterId) 
@@ -282,19 +274,6 @@ export const Dashboard: React.FC = () => {
                 )}
               </button>
 
-              {/* Map View Toggle */}
-              <button
-                onClick={() => setShowMapView(!showMapView)}
-                className={`flex items-center space-x-2 px-4 py-3 rounded-xl font-semibold transition-all duration-300 hover-lift ${
-                  showMapView
-                    ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-professional-lg'
-                    : 'glass text-slate-600 hover:bg-white/60'
-                }`}
-              >
-                <Map className="h-5 w-5" />
-                <span>Map</span>
-              </button>
-
               {/* Auto-refresh Toggle */}
               <button
                 onClick={() => setAutoRefresh(!autoRefresh)}
@@ -322,15 +301,6 @@ export const Dashboard: React.FC = () => {
                 {alerts.length > 0 && (
                   <span className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-pulse"></span>
                 )}
-              </button>
-              
-              {/* Refresh Control */}
-              <button
-                onClick={refreshData}
-                className="flex items-center space-x-2 glass hover:bg-white/60 text-slate-700 px-4 py-3 rounded-xl transition-all duration-300 font-semibold shadow-professional hover-lift"
-              >
-                <RefreshCw className={`h-5 w-5 ${isProcessing ? 'animate-spin' : ''}`} />
-                <span>Refresh</span>
               </button>
               
               {/* Date Selector */}
@@ -376,13 +346,6 @@ export const Dashboard: React.FC = () => {
             {showAlerts && alerts.length > 0 && (
               <div className="animate-pulse-professional">
                 <AlertsPanel alerts={alerts} onDismissAlert={dismissAlert} />
-              </div>
-            )}
-
-            {/* Map View */}
-            {showMapView && (
-              <div className="glass rounded-3xl shadow-professional-lg border border-blue-200/30 p-6">
-                <MapView digest={digest} alerts={alerts} />
               </div>
             )}
 
