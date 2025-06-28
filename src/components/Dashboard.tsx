@@ -24,7 +24,7 @@ import {
   List,
   RefreshCw
 } from 'lucide-react';
-import { format, subDays } from 'date-fns';
+import { format, subDays, parseISO } from 'date-fns';
 import jsPDF from 'jspdf';
 
 export const Dashboard: React.FC = () => {
@@ -58,7 +58,7 @@ export const Dashboard: React.FC = () => {
       await new Promise(resolve => setTimeout(resolve, 800));
     }
 
-    const mockDigest = generateMockDigest(new Date(date));
+    const mockDigest = generateMockDigest(parseISO(date));
     const mockAlerts = generateMockAlerts();
     
     setDigest(mockDigest);
