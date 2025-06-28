@@ -1,49 +1,49 @@
 import { NewsArticle, TopicCluster, DailyDigest, Alert, WeatherImpact, AnalyticsData } from '../types';
 import { format, subDays } from 'date-fns';
 
-const mockSources = ['The Tribune', 'Daily Herald', 'Metro News', 'City Chronicle', 'Regional Times'];
-const mockDistricts = ['Downtown', 'North District', 'South District', 'East District', 'West District'];
-const mockCategories = ['Crime', 'Traffic', 'Public Safety', 'Community Events', 'Emergency Response', 'Investigation'];
+const mockSources = ['The Hindu', 'Deccan Chronicle', 'Eenadu', 'Andhra Jyothy', 'Sakshi', 'Andhra Pradesh Today'];
+const mockDistricts = ['Visakhapatnam', 'Anakapalli', 'Amalapuram', 'Srikakulam', 'Yellamanchilli', 'Sompeta', 'Kadapa', 'Tirupati', 'Rajamahendravaram', 'Kakinada', 'Bhimavaram', 'Vijayawada'];
+const mockCategories = ['Crime Investigation', 'Traffic Management', 'Public Safety', 'Community Policing', 'Emergency Response', 'Cyber Crime', 'Drug Enforcement', 'Women Safety'];
 
 const generateMockArticle = (id: string, date: Date): NewsArticle => {
   const titles = [
-    'Traffic Incident Causes Major Delays on Highway 101',
-    'Community Policing Initiative Shows Positive Results',
-    'Drug Investigation Leads to Multiple Arrests',
-    'Emergency Response Training Exercise Scheduled',
-    'Neighborhood Watch Program Expands Coverage',
-    'Vehicle Theft Ring Dismantled After Joint Operation',
-    'Public Safety Meeting Addresses Community Concerns',
-    'New Technology Enhances Crime Scene Investigation',
-    'Youth Outreach Program Celebrates Success Stories',
-    'Cybersecurity Awareness Campaign Launched',
-    'Domestic Violence Cases Rise in Downtown Area',
-    'Police Department Receives Federal Grant for Equipment',
-    'Community Garden Project Reduces Vandalism',
-    'Traffic Safety Campaign Targets School Zones',
-    'Gang Activity Suspected in Recent Incidents'
+    'Traffic Management Initiative Reduces Congestion in Visakhapatnam',
+    'Community Policing Program Shows Success in Vijayawada',
+    'Drug Enforcement Operation Yields Major Arrests in Tirupati',
+    'Emergency Response Training Conducted in Kakinada',
+    'Cyber Crime Awareness Campaign Launched in Srikakulam',
+    'Women Safety Initiative Expands to Rural Areas of Kadapa',
+    'Anti-Smuggling Operation Successful at Bhimavaram Port',
+    'Public Safety Meeting Addresses Concerns in Anakapalli',
+    'Technology Integration Enhances Investigation Capabilities',
+    'Youth Engagement Program Reduces Crime in Rajamahendravaram',
+    'Coastal Security Enhanced Along Sompeta Shoreline',
+    'Rural Policing Initiative Strengthens Yellamanchilli Coverage',
+    'Inter-District Coordination Improves Response Times',
+    'Digital Evidence Lab Established in Amalapuram',
+    'Community Watch Program Prevents Property Crimes'
   ];
 
   const contents = [
-    'Comprehensive analysis reveals significant patterns in recent incidents requiring coordinated response from multiple units.',
-    'Community engagement initiatives demonstrate measurable improvement in public safety metrics across affected areas.',
-    'Investigation spanning multiple jurisdictions results in coordinated arrests and seizure of illegal substances.',
-    'Specialized training programs enhance department capabilities in emergency response and crisis management.',
-    'Collaborative community programs strengthen relationships between law enforcement and local residents.',
-    'Multi-agency operation successfully targets organized criminal activity affecting regional security.',
-    'Public forums provide valuable feedback on safety concerns and department priorities.',
-    'Advanced investigative tools improve evidence collection and case resolution rates.',
-    'Educational outreach programs create positive interactions with community youth.',
-    'Cybersecurity initiatives protect citizens from digital threats and online fraud.',
-    'Recent incidents show concerning patterns that require immediate attention and resource allocation.',
-    'Federal funding enables department to upgrade critical equipment and training programs.',
-    'Community-led initiatives demonstrate positive impact on reducing property crime in target areas.',
-    'Enhanced safety measures around educational facilities show measurable improvement in incident rates.',
-    'Intelligence gathering reveals potential connections between recent criminal activities.'
+    'Comprehensive analysis reveals significant improvement in traffic flow and reduced accident rates following implementation of smart traffic management systems.',
+    'Community engagement initiatives demonstrate measurable enhancement in public trust and cooperation with law enforcement agencies.',
+    'Multi-agency operation targeting drug trafficking networks results in seizure of contraband worth several crores and multiple arrests.',
+    'Specialized emergency response training enhances department capabilities in disaster management and crisis intervention.',
+    'Educational outreach programs create awareness about cyber threats and digital safety among citizens and businesses.',
+    'Women safety initiatives including patrol enhancement and helpline services show positive impact on crime prevention.',
+    'Coordinated anti-smuggling operations at coastal areas result in significant seizures and disruption of illegal trade networks.',
+    'Public consultation meetings provide valuable feedback on safety concerns and help prioritize resource allocation.',
+    'Advanced forensic technology and digital investigation tools improve case resolution rates and evidence quality.',
+    'Youth mentorship and skill development programs create positive alternatives and reduce juvenile delinquency rates.',
+    'Enhanced coastal surveillance and patrolling strengthen security along vulnerable shoreline areas.',
+    'Rural policing initiatives improve law enforcement presence and response capabilities in remote areas.',
+    'Inter-district communication systems and joint operations enhance coordination and resource sharing.',
+    'State-of-the-art digital forensics laboratory enhances investigation capabilities for cyber and financial crimes.',
+    'Community participation in neighborhood watch programs significantly reduces property crime incidents.'
   ];
 
-  const crimeTags = ['theft', 'assault', 'vandalism', 'fraud', 'burglary', 'traffic violation', 'domestic dispute'];
-  const officers = ['Officer Johnson', 'Detective Smith', 'Sergeant Williams', 'Captain Davis', 'Officer Brown'];
+  const crimeTags = ['investigation', 'prevention', 'enforcement', 'surveillance', 'community safety', 'traffic violation', 'cyber security'];
+  const officers = ['SI Ramesh Kumar', 'CI Lakshmi Devi', 'DSP Venkata Rao', 'SP Priya Sharma', 'ASI Suresh Babu'];
 
   return {
     id,
@@ -56,12 +56,12 @@ const generateMockArticle = (id: string, date: Date): NewsArticle => {
     district: mockDistricts[Math.floor(Math.random() * mockDistricts.length)],
     category: mockCategories[Math.floor(Math.random() * mockCategories.length)],
     priority: ['high', 'medium', 'low'][Math.floor(Math.random() * 3)] as 'high' | 'medium' | 'low',
-    keywords: ['incident', 'investigation', 'community', 'safety', 'response'].slice(0, Math.floor(Math.random() * 3) + 2),
+    keywords: ['operation', 'investigation', 'community', 'safety', 'enforcement'].slice(0, Math.floor(Math.random() * 3) + 2),
     sentiment: ['positive', 'neutral', 'negative'][Math.floor(Math.random() * 3)] as 'positive' | 'neutral' | 'negative',
     location: {
-      lat: 40.7128 + (Math.random() - 0.5) * 0.1,
-      lng: -74.0060 + (Math.random() - 0.5) * 0.1,
-      address: `${Math.floor(Math.random() * 9999)} Main St`
+      lat: 17.6868 + (Math.random() - 0.5) * 2,
+      lng: 83.2185 + (Math.random() - 0.5) * 2,
+      address: `${Math.floor(Math.random() * 999) + 1} Main Road`
     },
     crimeTags: crimeTags.slice(0, Math.floor(Math.random() * 3) + 1),
     officersInvolved: officers.slice(0, Math.floor(Math.random() * 2) + 1)
@@ -70,45 +70,45 @@ const generateMockArticle = (id: string, date: Date): NewsArticle => {
 
 const generateTopicCluster = (articles: NewsArticle[]): TopicCluster => {
   const clusterTitles = [
-    'Traffic Safety Operations',
-    'Community Engagement Initiatives',
-    'Criminal Investigation Updates',
-    'Emergency Response Activities',
-    'Public Safety Measures',
-    'Technology Implementation',
-    'Inter-agency Cooperation',
-    'Training and Development',
-    'Drug-Related Incidents',
-    'Domestic Violence Cases',
-    'Youth Crime Prevention',
-    'Property Crime Patterns'
+    'Traffic Safety & Management Operations',
+    'Community Policing & Engagement',
+    'Drug Enforcement & Anti-Narcotics',
+    'Emergency Response & Disaster Management',
+    'Cyber Crime Investigation & Prevention',
+    'Women Safety & Protection Initiatives',
+    'Coastal Security & Anti-Smuggling',
+    'Rural Policing & Remote Area Coverage',
+    'Technology Integration & Modernization',
+    'Youth Crime Prevention Programs',
+    'Inter-District Coordination Activities',
+    'Public Safety & Crime Prevention'
   ];
 
   const summaries = [
-    'Coordinated efforts across multiple districts addressing traffic safety concerns with measurable improvements in incident response times.',
-    'Community outreach programs demonstrate positive engagement between law enforcement and local residents.',
-    'Ongoing investigations reveal patterns requiring enhanced surveillance and coordinated response strategies.',
-    'Emergency preparedness exercises and real-world responses showcase department capabilities and areas for improvement.',
-    'Proactive measures implemented to enhance public safety infrastructure and community protection protocols.',
-    'Technology integration improves operational efficiency and evidence management across departments.',
-    'Multi-jurisdiction collaboration enhances resource sharing and coordinated response capabilities.',
-    'Professional development initiatives strengthen officer capabilities and community relations.',
-    'Coordinated response to drug-related incidents shows concerning trends requiring immediate attention.',
-    'Domestic violence cases require specialized response protocols and community support resources.',
-    'Youth engagement programs aim to prevent criminal activity through education and mentorship.',
-    'Property crime analysis reveals patterns that inform patrol strategies and prevention measures.'
+    'Coordinated traffic management operations across multiple districts show significant improvement in road safety and congestion reduction.',
+    'Community engagement programs strengthen police-public relations and enhance cooperative crime prevention efforts.',
+    'Anti-narcotics operations targeting drug trafficking networks demonstrate effective inter-agency coordination and enforcement.',
+    'Emergency preparedness and disaster response capabilities enhanced through specialized training and equipment upgrades.',
+    'Cyber crime investigation units tackle digital threats with advanced technology and specialized expertise.',
+    'Women safety initiatives including enhanced patrolling and support services show positive impact on crime prevention.',
+    'Coastal security operations strengthen surveillance and anti-smuggling efforts along Andhra Pradesh shoreline.',
+    'Rural policing initiatives improve law enforcement presence and community safety in remote areas.',
+    'Technology integration enhances investigation capabilities and operational efficiency across departments.',
+    'Youth engagement programs create positive alternatives and reduce juvenile crime through mentorship and skills development.',
+    'Inter-district coordination improves resource sharing and joint operation effectiveness.',
+    'Comprehensive public safety measures address community concerns and enhance overall security.'
   ];
 
   const actionItems = [
-    'Increase patrol frequency in affected areas',
-    'Coordinate with community leaders for public meetings',
-    'Deploy additional surveillance equipment',
-    'Schedule inter-agency briefing sessions',
-    'Implement enhanced training protocols',
-    'Review and update response procedures',
-    'Establish community liaison programs',
-    'Conduct follow-up investigations',
-    'Allocate additional resources to high-priority areas',
+    'Increase patrol frequency in high-traffic areas',
+    'Coordinate with district collectors for community meetings',
+    'Deploy additional surveillance equipment at strategic locations',
+    'Schedule inter-agency coordination meetings',
+    'Implement enhanced training protocols for personnel',
+    'Review and update standard operating procedures',
+    'Establish community liaison officer programs',
+    'Conduct follow-up investigations on pending cases',
+    'Allocate additional resources to priority districts',
     'Develop prevention strategies with local organizations'
   ];
 
@@ -136,32 +136,32 @@ export const generateMockAlerts = (): Alert[] => {
     {
       id: 'alert-1',
       type: 'breaking',
-      title: 'Multiple Vehicle Accident on Highway 101',
-      description: 'Major traffic incident requiring immediate response. Multiple units dispatched.',
+      title: 'Multi-Vehicle Accident on NH-16 Near Visakhapatnam',
+      description: 'Major traffic incident on National Highway 16 requiring immediate response. Multiple units dispatched to scene.',
       priority: 'high',
-      districts: ['North District', 'East District'],
+      districts: ['Visakhapatnam', 'Anakapalli'],
       timestamp: new Date().toISOString(),
       actionRequired: true
     },
     {
       id: 'alert-2',
       type: 'pattern',
-      title: 'Increased Burglary Reports in Downtown',
-      description: 'Pattern analysis shows 40% increase in burglary reports over the past week.',
+      title: 'Increased Property Crime Reports in Vijayawada',
+      description: 'Pattern analysis indicates 35% increase in property crime reports over the past week in commercial areas.',
       priority: 'medium',
-      districts: ['Downtown'],
+      districts: ['Vijayawada'],
       timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
       actionRequired: true
     },
     {
       id: 'alert-3',
       type: 'weather',
-      title: 'Severe Weather Warning',
-      description: 'Heavy rain expected to impact traffic and emergency response times.',
-      priority: 'medium',
-      districts: ['All Districts'],
+      title: 'Cyclone Warning for Coastal Districts',
+      description: 'Meteorological department issues cyclone warning for coastal areas. Enhanced security measures required.',
+      priority: 'high',
+      districts: ['Srikakulam', 'Sompeta', 'Kakinada'],
       timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-      actionRequired: false
+      actionRequired: true
     }
   ];
 
@@ -169,20 +169,21 @@ export const generateMockAlerts = (): Alert[] => {
 };
 
 export const generateMockWeather = (): WeatherImpact => {
-  const conditions = ['Clear', 'Rainy', 'Cloudy', 'Stormy', 'Foggy'];
+  const conditions = ['Clear', 'Monsoon', 'Partly Cloudy', 'Thunderstorms', 'Humid'];
   const condition = conditions[Math.floor(Math.random() * conditions.length)];
   
   return {
     condition,
-    temperature: Math.floor(Math.random() * 30) + 5,
-    description: `${condition} weather conditions may impact patrol operations and response times.`,
+    temperature: Math.floor(Math.random() * 15) + 25, // 25-40°C typical for AP
+    description: `${condition} weather conditions typical for Andhra Pradesh coastal region may impact patrol operations and response times.`,
     crimeCorrelation: ['high', 'medium', 'low'][Math.floor(Math.random() * 3)] as 'high' | 'medium' | 'low',
     recommendations: [
-      'Increase patrol visibility in high-traffic areas',
-      'Monitor weather-related incidents closely',
-      'Prepare emergency response protocols',
-      'Coordinate with traffic management'
-    ].slice(0, Math.floor(Math.random() * 3) + 1)
+      'Increase patrol visibility in coastal areas during monsoon',
+      'Monitor weather-related incidents and traffic disruptions',
+      'Prepare emergency response protocols for severe weather',
+      'Coordinate with disaster management authorities',
+      'Enhance communication systems during adverse weather'
+    ].slice(0, Math.floor(Math.random() * 3) + 2)
   };
 };
 
@@ -190,58 +191,59 @@ export const generateMockAnalytics = (): AnalyticsData => {
   return {
     crimePatterns: {
       timeOfDay: {
-        '00-06': Math.floor(Math.random() * 20) + 5,
-        '06-12': Math.floor(Math.random() * 30) + 15,
-        '12-18': Math.floor(Math.random() * 40) + 20,
-        '18-24': Math.floor(Math.random() * 35) + 25
+        '00-06': Math.floor(Math.random() * 15) + 5,
+        '06-12': Math.floor(Math.random() * 25) + 15,
+        '12-18': Math.floor(Math.random() * 35) + 20,
+        '18-24': Math.floor(Math.random() * 30) + 25
       },
       dayOfWeek: {
-        'Monday': Math.floor(Math.random() * 50) + 20,
-        'Tuesday': Math.floor(Math.random() * 45) + 18,
-        'Wednesday': Math.floor(Math.random() * 40) + 15,
-        'Thursday': Math.floor(Math.random() * 45) + 20,
-        'Friday': Math.floor(Math.random() * 60) + 30,
-        'Saturday': Math.floor(Math.random() * 70) + 35,
-        'Sunday': Math.floor(Math.random() * 55) + 25
+        'Monday': Math.floor(Math.random() * 40) + 20,
+        'Tuesday': Math.floor(Math.random() * 35) + 18,
+        'Wednesday': Math.floor(Math.random() * 30) + 15,
+        'Thursday': Math.floor(Math.random() * 35) + 20,
+        'Friday': Math.floor(Math.random() * 50) + 30,
+        'Saturday': Math.floor(Math.random() * 60) + 35,
+        'Sunday': Math.floor(Math.random() * 45) + 25
       },
       monthlyTrend: {
-        'Jan': -5, 'Feb': -2, 'Mar': 3, 'Apr': 7, 'May': 12, 'Jun': 8,
-        'Jul': 15, 'Aug': 10, 'Sep': 5, 'Oct': 2, 'Nov': -3, 'Dec': -8
+        'Jan': -3, 'Feb': -1, 'Mar': 2, 'Apr': 5, 'May': 8, 'Jun': 12,
+        'Jul': 15, 'Aug': 18, 'Sep': 10, 'Oct': 5, 'Nov': 2, 'Dec': -2
       }
     },
     districtComparison: {
-      'Downtown': {
-        totalIncidents: Math.floor(Math.random() * 100) + 50,
-        priorityBreakdown: { high: 15, medium: 25, low: 35 },
+      'Visakhapatnam': {
+        totalIncidents: Math.floor(Math.random() * 80) + 60,
+        priorityBreakdown: { high: 18, medium: 28, low: 34 },
         trend: ['up', 'down', 'stable'][Math.floor(Math.random() * 3)] as 'up' | 'down' | 'stable'
       },
-      'North District': {
-        totalIncidents: Math.floor(Math.random() * 80) + 30,
-        priorityBreakdown: { high: 8, medium: 20, low: 25 },
+      'Vijayawada': {
+        totalIncidents: Math.floor(Math.random() * 70) + 50,
+        priorityBreakdown: { high: 15, medium: 25, low: 30 },
         trend: ['up', 'down', 'stable'][Math.floor(Math.random() * 3)] as 'up' | 'down' | 'stable'
       },
-      'South District': {
-        totalIncidents: Math.floor(Math.random() * 90) + 40,
-        priorityBreakdown: { high: 12, medium: 22, low: 30 },
+      'Tirupati': {
+        totalIncidents: Math.floor(Math.random() * 60) + 40,
+        priorityBreakdown: { high: 12, medium: 20, low: 28 },
         trend: ['up', 'down', 'stable'][Math.floor(Math.random() * 3)] as 'up' | 'down' | 'stable'
       },
-      'East District': {
-        totalIncidents: Math.floor(Math.random() * 70) + 25,
-        priorityBreakdown: { high: 6, medium: 18, low: 28 },
+      'Kakinada': {
+        totalIncidents: Math.floor(Math.random() * 50) + 30,
+        priorityBreakdown: { high: 8, medium: 18, low: 24 },
         trend: ['up', 'down', 'stable'][Math.floor(Math.random() * 3)] as 'up' | 'down' | 'stable'
       },
-      'West District': {
-        totalIncidents: Math.floor(Math.random() * 85) + 35,
-        priorityBreakdown: { high: 10, medium: 24, low: 32 },
+      'Srikakulam': {
+        totalIncidents: Math.floor(Math.random() * 45) + 25,
+        priorityBreakdown: { high: 6, medium: 15, low: 24 },
         trend: ['up', 'down', 'stable'][Math.floor(Math.random() * 3)] as 'up' | 'down' | 'stable'
       }
     },
     sourceReliability: {
-      'The Tribune': 0.92,
-      'Daily Herald': 0.88,
-      'Metro News': 0.85,
-      'City Chronicle': 0.90,
-      'Regional Times': 0.87
+      'The Hindu': 0.94,
+      'Deccan Chronicle': 0.91,
+      'Eenadu': 0.89,
+      'Andhra Jyothy': 0.87,
+      'Sakshi': 0.88,
+      'Andhra Pradesh Today': 0.85
     }
   };
 };
@@ -251,7 +253,7 @@ export const generateMockDigest = (date: Date): DailyDigest => {
   const allArticles: NewsArticle[] = [];
   for (let i = 0; i < 8; i++) {
     const currentDate = subDays(date, i);
-    const articlesPerDay = Math.floor(Math.random() * 20) + 15;
+    const articlesPerDay = Math.floor(Math.random() * 25) + 20; // More articles for a state system
     
     for (let j = 0; j < articlesPerDay; j++) {
       allArticles.push(generateMockArticle(`${format(currentDate, 'yyyy-MM-dd')}-${j}`, currentDate));
@@ -268,7 +270,7 @@ export const generateMockDigest = (date: Date): DailyDigest => {
   const clusters: TopicCluster[] = [];
   const clusterCount = Math.floor(relevantArticles.length / 4) + 1;
   
-  for (let i = 0; i < clusterCount && i < 8; i++) {
+  for (let i = 0; i < clusterCount && i < 10; i++) {
     const startIndex = i * 4;
     const clusterArticles = relevantArticles.slice(startIndex, startIndex + 4);
     if (clusterArticles.length > 0) {
@@ -294,13 +296,13 @@ export const generateMockDigest = (date: Date): DailyDigest => {
     districts: mockDistricts,
     generatedAt: new Date().toISOString(),
     weeklyComparison: {
-      articlesChange: Math.floor(Math.random() * 40) - 20,
+      articlesChange: Math.floor(Math.random() * 30) - 15,
       priorityDistribution: {
         high: clusters.filter(c => c.priority === 'high').length,
         medium: clusters.filter(c => c.priority === 'medium').length,
         low: clusters.filter(c => c.priority === 'low').length
       },
-      topDistricts: mockDistricts.slice(0, 3)
+      topDistricts: ['Visakhapatnam', 'Vijayawada', 'Tirupati']
     },
     alerts: generateMockAlerts(),
     weatherImpact: generateMockWeather()
