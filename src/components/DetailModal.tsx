@@ -1,20 +1,74 @@
 import React from 'react';
 import { TopicCluster } from '../types';
-import { X, Calendar, MapPin, TrendingUp, ExternalLink, Clock } from 'lucide-react';
+import { X, Calendar, MapPin, TrendingUp, ExternalLink, Clock, Bookmark, Share2, Download } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface DetailModalProps {
   cluster: TopicCluster;
   onClose: () => void;
+  isBookmarked?: boolean;
+  onToggleBookmark?: () => void;
 }
 
-export const DetailModal: React.FC<DetailModalProps> = ({ cluster, onClose }) => {
+export const DetailModal: React.FC<DetailModalProps> = ({ 
+  cluster, 
+  onClose, 
+  isBookmarked = false, 
+  onToggleBookmark 
+}) => {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'high': return 'bg-gradient-to-r from-red-100 to-pink-100 text-red-800 border-red-200';
       case 'medium': return 'bg-gradient-to-r from-yellow-100 to-orange-100 text-yellow-800 border-yellow-200';
       case 'low': return 'bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-800 border-emerald-200';
       default: return 'bg-gradient-to-r from-slate-100 to-gray-100 text-slate-800 border-slate-200';
+    }
+  };
+
+  const exportClusterData = () => {
+    const data = {
+      cluster: cluster.title,
+      priority: cluster.priority,
+      riskLevel: cluster.riskLevel,
+      summary: cluster.summary,
+      affectedDistricts: cluster.affectedDistricts,
+      articles: cluster.articles.map(article => ({
+        title: article.title,
+        source: article.source,
+        publishedAt: article.publishedAt,
+        relevanceScore: article.relevanceScore,
+        district: article.district
+      })),
+      actionItems: cluster.actionItems,
+      trends: cluster.trends
+    };
+
+    const dataStr = JSON.stringify(data, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `cluster_${cluster.id}_${format(new Date(), 'yyyy-MM-dd')}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const shareCluster = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: cluster.title,
+          text: cluster.summary,
+          url: window.location.href
+        });
+      } catch (err) {
+        console.log('Error sharing:', err);
+      }
+    } else {
+      // Fallback to clipboard
+      const shareText = `${cluster.title}\n\n${cluster.summary}\n\nAffected Districts: ${cluster.affectedDistricts.join(', ')}`;
+      await navigator.clipboard.writeText(shareText);
+      alert('Cluster details copied to clipboard!');
     }
   };
 
@@ -27,13 +81,43 @@ export const DetailModal: React.FC<DetailModalProps> = ({ cluster, onClose }) =>
             <span className={`px-3 py-1 text-xs font-semibold rounded-full border shadow-sm ${getPriorityColor(cluster.priority)}`}>
               {cluster.priority.toUpperCase()}
             </span>
+            {isBookmarked && (
+              <Bookmark className="h-5 w-5 text-yellow-500 fill-current" />
+            )}
           </div>
-          <button
-            onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 transition-colors p-2 hover:bg-white/50 rounded-xl"
-          >
-            <X className="h-6 w-6" />
-          </button>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={onToggleBookmark}
+              className={`p-2 rounded-xl transition-colors ${
+                isBookmarked 
+                  ? 'bg-yellow-100 text-yellow-600 hover:bg-yellow-200' 
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+              title={isBookmarked ? 'Remove Bookmark' : 'Bookmark'}
+            >
+              <Bookmark className={`h-5 w-5 ${isBookmarked ? 'fill-current' : ''}`} />
+            </button>
+            <button
+              onClick={shareCluster}
+              className="p-2 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl transition-colors"
+              title="Share Cluster"
+            >
+              <Share2 className="h-5 w-5" />
+            </button>
+            <button
+              onClick={exportClusterData}
+              className="p-2 bg-slate-100 text-slate-600 hover:bg-slate-200 rounded-xl transition-colors"
+              title="Export Data"
+            >
+              <Download className="h-5 w-5" />
+            </button>
+            <button
+              onClick={onClose}
+              className="text-slate-400 hover:text-slate-600 transition-colors p-2 hover:bg-white/50 rounded-xl"
+            >
+              <X className="h-6 w-6" />
+            </button>
+          </div>
         </div>
 
         <div className="p-6">
@@ -78,6 +162,20 @@ export const DetailModal: React.FC<DetailModalProps> = ({ cluster, onClose }) =>
               </div>
             </div>
           </div>
+
+          {cluster.actionItems && cluster.actionItems.length > 0 && (
+            <div className="mb-6 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border border-indigo-100">
+              <h4 className="text-sm font-semibold text-indigo-900 mb-3">Recommended Actions:</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {cluster.actionItems.map((action, index) => (
+                  <div key={index} className="flex items-start space-x-2 bg-white/50 rounded-lg p-3">
+                    <span className="text-indigo-600 mt-1 font-bold text-sm">{index + 1}.</span>
+                    <span className="text-sm font-medium text-indigo-800">{action}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-slate-800 mb-4">Current Articles ({cluster.articles.length})</h3>

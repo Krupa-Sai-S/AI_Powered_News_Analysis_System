@@ -1,18 +1,27 @@
 import React from 'react';
 import { TopicCluster } from '../types';
-import { AlertTriangle, TrendingUp, Users, Clock, ExternalLink, Shield, Activity } from 'lucide-react';
+import { AlertTriangle, TrendingUp, Users, Clock, ExternalLink, Shield, Activity, Bookmark, Archive, MoreVertical } from 'lucide-react';
+import { useState } from 'react';
 
 interface TopicClusterCardProps {
   cluster: TopicCluster;
   onViewDetails: (cluster: TopicCluster) => void;
   viewMode?: 'grid' | 'list';
+  isBookmarked?: boolean;
+  onToggleBookmark?: () => void;
+  onArchive?: () => void;
 }
 
 export const TopicClusterCard: React.FC<TopicClusterCardProps> = ({ 
   cluster, 
   onViewDetails, 
-  viewMode = 'grid' 
+  viewMode = 'grid',
+  isBookmarked = false,
+  onToggleBookmark,
+  onArchive
 }) => {
+  const [showActions, setShowActions] = useState(false);
+
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'high': return 'bg-gradient-to-r from-red-100 to-pink-100 text-red-800 border-red-200';
@@ -56,6 +65,7 @@ export const TopicClusterCard: React.FC<TopicClusterCardProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4 flex-1">
             <div className="flex items-center space-x-2">
+              {isBookmarked && <Bookmark className="h-4 w-4 text-yellow-500 fill-current" />}
               <h3 className="text-lg font-semibold text-slate-800">{cluster.title}</h3>
               <span className={`px-3 py-1 text-xs font-semibold rounded-full border shadow-sm ${getPriorityColor(cluster.priority)}`}>
                 {cluster.priority.toUpperCase()}
@@ -79,6 +89,42 @@ export const TopicClusterCard: React.FC<TopicClusterCardProps> = ({
               <TrendingUp className={`h-4 w-4 ${getSentimentColor(cluster.trends.sentiment)}`} />
               <span>{getTrendIcon(cluster.trends.weeklyTrend)}</span>
             </div>
+            
+            {/* Action Menu */}
+            <div className="relative">
+              <button
+                onClick={() => setShowActions(!showActions)}
+                className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                <MoreVertical className="h-4 w-4" />
+              </button>
+              
+              {showActions && (
+                <div className="absolute right-0 top-full mt-2 bg-white rounded-xl shadow-lg border border-slate-200 py-2 z-10 min-w-[150px]">
+                  <button
+                    onClick={() => {
+                      onToggleBookmark?.();
+                      setShowActions(false);
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center space-x-2"
+                  >
+                    <Bookmark className={`h-4 w-4 ${isBookmarked ? 'text-yellow-500 fill-current' : 'text-slate-400'}`} />
+                    <span>{isBookmarked ? 'Remove Bookmark' : 'Bookmark'}</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      onArchive?.();
+                      setShowActions(false);
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center space-x-2"
+                  >
+                    <Archive className="h-4 w-4 text-slate-400" />
+                    <span>Archive</span>
+                  </button>
+                </div>
+              )}
+            </div>
+            
             <button
               onClick={() => onViewDetails(cluster)}
               className="text-indigo-600 hover:text-purple-600 font-semibold transition-colors bg-indigo-50 hover:bg-indigo-100 px-3 py-1 rounded-lg"
@@ -92,9 +138,16 @@ export const TopicClusterCard: React.FC<TopicClusterCardProps> = ({
   }
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-indigo-100 p-6 hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1">
+    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-indigo-100 p-6 hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 relative">
+      {/* Bookmark indicator */}
+      {isBookmarked && (
+        <div className="absolute top-4 right-4">
+          <Bookmark className="h-5 w-5 text-yellow-500 fill-current" />
+        </div>
+      )}
+      
       <div className="flex items-start justify-between mb-4">
-        <div className="flex-1">
+        <div className="flex-1 pr-8">
           <div className="flex items-center space-x-2 mb-2">
             <h3 className="text-lg font-semibold text-slate-800">{cluster.title}</h3>
             <span className={`px-3 py-1 text-xs font-semibold rounded-full border shadow-sm ${getPriorityColor(cluster.priority)}`}>
@@ -117,6 +170,41 @@ export const TopicClusterCard: React.FC<TopicClusterCardProps> = ({
               <Shield className="h-5 w-5 text-red-600 flex-shrink-0" />
             </div>
           )}
+          
+          {/* Action Menu */}
+          <div className="relative">
+            <button
+              onClick={() => setShowActions(!showActions)}
+              className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+            >
+              <MoreVertical className="h-4 w-4 text-slate-400" />
+            </button>
+            
+            {showActions && (
+              <div className="absolute right-0 top-full mt-2 bg-white rounded-xl shadow-lg border border-slate-200 py-2 z-10 min-w-[150px]">
+                <button
+                  onClick={() => {
+                    onToggleBookmark?.();
+                    setShowActions(false);
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center space-x-2"
+                >
+                  <Bookmark className={`h-4 w-4 ${isBookmarked ? 'text-yellow-500 fill-current' : 'text-slate-400'}`} />
+                  <span>{isBookmarked ? 'Remove Bookmark' : 'Bookmark'}</span>
+                </button>
+                <button
+                  onClick={() => {
+                    onArchive?.();
+                    setShowActions(false);
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center space-x-2"
+                >
+                  <Archive className="h-4 w-4 text-slate-400" />
+                  <span>Archive</span>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

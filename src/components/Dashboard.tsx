@@ -10,6 +10,9 @@ import { AlertsPanel } from './AlertsPanel';
 import { WeatherWidget } from './WeatherWidget';
 import { AnalyticsChart } from './AnalyticsChart';
 import { QuickActions } from './QuickActions';
+import { MapView } from './MapView';
+import { NotificationCenter } from './NotificationCenter';
+import { ScheduleModal } from './ScheduleModal';
 import { 
   Shield, 
   Calendar, 
@@ -28,7 +31,14 @@ import {
   Star,
   Activity,
   Users,
-  Eye
+  Eye,
+  Settings,
+  Map,
+  Bookmark,
+  Archive,
+  Zap,
+  Target,
+  AlertCircle
 } from 'lucide-react';
 import { format, subDays, parseISO } from 'date-fns';
 
@@ -44,6 +54,15 @@ export const Dashboard: React.FC = () => {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [showAlerts, setShowAlerts] = useState(true);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showMapView, setShowMapView] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [bookmarkedClusters, setBookmarkedClusters] = useState<string[]>([]);
+  const [archivedClusters, setArchivedClusters] = useState<string[]>([]);
+  const [autoRefresh, setAutoRefresh] = useState(false);
+  const [refreshInterval, setRefreshInterval] = useState<NodeJS.Timeout | null>(null);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
 
   const processNewsFeed = async (date: string) => {
     setIsProcessing(true);
@@ -70,6 +89,19 @@ export const Dashboard: React.FC = () => {
     
     setDigest(mockDigest);
     setAlerts(mockAlerts);
+    setLastRefresh(new Date());
+    
+    // Add notification for new digest
+    const newNotification = {
+      id: Date.now().toString(),
+      title: 'Daily Digest Updated',
+      message: `New digest generated with ${mockDigest.topicClusters.length} clusters`,
+      type: 'info',
+      timestamp: new Date(),
+      read: false
+    };
+    setNotifications(prev => [newNotification, ...prev.slice(0, 9)]);
+    
     setIsProcessing(false);
     setProcessingStatus(null);
   };
@@ -78,7 +110,30 @@ export const Dashboard: React.FC = () => {
     processNewsFeed(selectedDate);
   }, [selectedDate]);
 
+  // Auto-refresh functionality
+  useEffect(() => {
+    if (autoRefresh) {
+      const interval = setInterval(() => {
+        processNewsFeed(selectedDate);
+      }, 300000); // 5 minutes
+      setRefreshInterval(interval);
+    } else {
+      if (refreshInterval) {
+        clearInterval(refreshInterval);
+        setRefreshInterval(null);
+      }
+    }
+
+    return () => {
+      if (refreshInterval) {
+        clearInterval(refreshInterval);
+      }
+    };
+  }, [autoRefresh, selectedDate]);
+
   const filteredClusters = digest?.topicClusters.filter(cluster => {
+    if (archivedClusters.includes(cluster.id)) return false;
+    
     const matchesPriority = filter === 'all' || cluster.priority === filter;
     const matchesSearch = searchTerm === '' || 
       cluster.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -89,14 +144,36 @@ export const Dashboard: React.FC = () => {
   const exportToPDF = () => {
     if (!digest) return;
     generateProfessionalReport(digest, alerts);
+    
+    // Add notification
+    const notification = {
+      id: Date.now().toString(),
+      title: 'Report Generated',
+      message: 'PDF report has been downloaded successfully',
+      type: 'success',
+      timestamp: new Date(),
+      read: false
+    };
+    setNotifications(prev => [notification, ...prev.slice(0, 9)]);
   };
 
   const dismissAlert = (alertId: string) => {
     setAlerts(alerts.filter(alert => alert.id !== alertId));
+    
+    // Add notification
+    const notification = {
+      id: Date.now().toString(),
+      title: 'Alert Dismissed',
+      message: 'Alert has been successfully dismissed',
+      type: 'info',
+      timestamp: new Date(),
+      read: false
+    };
+    setNotifications(prev => [notification, ...prev.slice(0, 9)]);
   };
 
   const scheduleReport = () => {
-    alert('Report scheduling feature would be implemented here');
+    setShowScheduleModal(true);
   };
 
   const shareDigest = () => {
@@ -108,9 +185,46 @@ export const Dashboard: React.FC = () => {
     processNewsFeed(selectedDate);
   };
 
+  const toggleBookmark = (clusterId: string) => {
+    setBookmarkedClusters(prev => 
+      prev.includes(clusterId) 
+        ? prev.filter(id => id !== clusterId)
+        : [...prev, clusterId]
+    );
+  };
+
+  const archiveCluster = (clusterId: string) => {
+    setArchivedClusters(prev => [...prev, clusterId]);
+    
+    // Add notification
+    const notification = {
+      id: Date.now().toString(),
+      title: 'Cluster Archived',
+      message: 'Topic cluster has been archived',
+      type: 'info',
+      timestamp: new Date(),
+      read: false
+    };
+    setNotifications(prev => [notification, ...prev.slice(0, 9)]);
+  };
+
+  const markNotificationAsRead = (notificationId: string) => {
+    setNotifications(prev => 
+      prev.map(notif => 
+        notif.id === notificationId ? { ...notif, read: true } : notif
+      )
+    );
+  };
+
+  const clearAllNotifications = () => {
+    setNotifications([]);
+  };
+
+  const unreadNotifications = notifications.filter(n => !n.read).length;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      {/* Professional Header */}
+      {/* Enhanced Professional Header */}
       <div className="glass shadow-professional-lg border-b border-blue-200/30">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
@@ -120,7 +234,9 @@ export const Dashboard: React.FC = () => {
                 <div className="p-4 bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-800 rounded-2xl shadow-professional-lg">
                   <Shield className="h-10 w-10 text-white" />
                 </div>
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white status-indicator status-active"></div>
+                <div className={`absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 border-white status-indicator ${
+                  autoRefresh ? 'status-active' : 'status-warning'
+                }`}></div>
               </div>
               
               {/* Department Identity */}
@@ -134,7 +250,7 @@ export const Dashboard: React.FC = () => {
                 <div className="flex items-center space-x-4 text-xs text-slate-500">
                   <span className="flex items-center space-x-1">
                     <Activity className="h-3 w-3" />
-                    <span>Real-time Monitoring</span>
+                    <span>{autoRefresh ? 'Auto-Refresh ON' : 'Manual Mode'}</span>
                   </span>
                   <span className="flex items-center space-x-1">
                     <Users className="h-3 w-3" />
@@ -142,14 +258,56 @@ export const Dashboard: React.FC = () => {
                   </span>
                   <span className="flex items-center space-x-1">
                     <Eye className="h-3 w-3" />
-                    <span>24/7 Operations</span>
+                    <span>Last: {format(lastRefresh, 'HH:mm')}</span>
                   </span>
                 </div>
               </div>
             </div>
             
-            {/* Action Controls */}
+            {/* Enhanced Action Controls */}
             <div className="flex items-center space-x-4">
+              {/* Notification Center */}
+              <button
+                onClick={() => setShowNotifications(!showNotifications)}
+                className={`relative flex items-center space-x-2 px-4 py-3 rounded-xl font-semibold transition-all duration-300 hover-lift ${
+                  unreadNotifications > 0 
+                    ? 'bg-gradient-to-r from-purple-500 to-pink-600 text-white shadow-professional-lg' 
+                    : 'glass text-slate-600 hover:bg-white/60'
+                }`}
+              >
+                <Bell className="h-5 w-5" />
+                <span className="font-bold">{unreadNotifications}</span>
+                {unreadNotifications > 0 && (
+                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-400 rounded-full animate-pulse"></span>
+                )}
+              </button>
+
+              {/* Map View Toggle */}
+              <button
+                onClick={() => setShowMapView(!showMapView)}
+                className={`flex items-center space-x-2 px-4 py-3 rounded-xl font-semibold transition-all duration-300 hover-lift ${
+                  showMapView
+                    ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-professional-lg'
+                    : 'glass text-slate-600 hover:bg-white/60'
+                }`}
+              >
+                <Map className="h-5 w-5" />
+                <span>Map</span>
+              </button>
+
+              {/* Auto-refresh Toggle */}
+              <button
+                onClick={() => setAutoRefresh(!autoRefresh)}
+                className={`flex items-center space-x-2 px-4 py-3 rounded-xl font-semibold transition-all duration-300 hover-lift ${
+                  autoRefresh
+                    ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-professional-lg'
+                    : 'glass text-slate-600 hover:bg-white/60'
+                }`}
+              >
+                <Zap className="h-5 w-5" />
+                <span>{autoRefresh ? 'Auto' : 'Manual'}</span>
+              </button>
+              
               {/* Alert Indicator */}
               <button
                 onClick={() => setShowAlerts(!showAlerts)}
@@ -171,7 +329,7 @@ export const Dashboard: React.FC = () => {
                 onClick={refreshData}
                 className="flex items-center space-x-2 glass hover:bg-white/60 text-slate-700 px-4 py-3 rounded-xl transition-all duration-300 font-semibold shadow-professional hover-lift"
               >
-                <RefreshCw className="h-5 w-5" />
+                <RefreshCw className={`h-5 w-5 ${isProcessing ? 'animate-spin' : ''}`} />
                 <span>Refresh</span>
               </button>
               
@@ -221,8 +379,15 @@ export const Dashboard: React.FC = () => {
               </div>
             )}
 
+            {/* Map View */}
+            {showMapView && (
+              <div className="glass rounded-3xl shadow-professional-lg border border-blue-200/30 p-6">
+                <MapView digest={digest} alerts={alerts} />
+              </div>
+            )}
+
             {/* Executive Dashboard Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
               <div className="glass rounded-2xl shadow-professional p-6 hover-lift border border-blue-200/30">
                 <div className="flex items-center space-x-4">
                   <div className="p-3 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl shadow-lg">
@@ -279,6 +444,21 @@ export const Dashboard: React.FC = () => {
                     <p className="text-sm text-slate-600 font-semibold">AP Districts</p>
                     <p className="text-xs font-bold text-slate-600">
                       Focus: {digest.weeklyComparison.topDistricts[0]}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="glass rounded-2xl shadow-professional p-6 hover-lift border border-indigo-200/30">
+                <div className="flex items-center space-x-4">
+                  <div className="p-3 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg">
+                    <Bookmark className="h-7 w-7 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-3xl font-bold text-slate-800">{bookmarkedClusters.length}</p>
+                    <p className="text-sm text-slate-600 font-semibold">Bookmarked</p>
+                    <p className="text-xs font-bold text-slate-600">
+                      {archivedClusters.length} archived
                     </p>
                   </div>
                 </div>
@@ -366,21 +546,33 @@ export const Dashboard: React.FC = () => {
                 <h2 className="text-3xl font-bold gradient-text">
                   Intelligence Analysis ({filteredClusters.length})
                 </h2>
-                <div className="flex items-center space-x-2 text-sm text-slate-600 glass rounded-xl px-4 py-2">
-                  <Activity className="h-4 w-4 text-green-500" />
-                  <span className="font-semibold">Live Analysis</span>
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2 text-sm text-slate-600 glass rounded-xl px-4 py-2">
+                    <Activity className="h-4 w-4 text-green-500" />
+                    <span className="font-semibold">Live Analysis</span>
+                  </div>
+                  {bookmarkedClusters.length > 0 && (
+                    <div className="flex items-center space-x-2 text-sm text-slate-600 glass rounded-xl px-4 py-2">
+                      <Bookmark className="h-4 w-4 text-yellow-500" />
+                      <span className="font-semibold">{bookmarkedClusters.length} Bookmarked</span>
+                    </div>
+                  )}
                 </div>
               </div>
               
               {filteredClusters.length > 0 ? (
                 <div className={viewMode === 'grid' ? 'grid grid-cols-1 lg:grid-cols-2 gap-6' : 'space-y-4'}>
                   {filteredClusters.map((cluster) => (
-                    <TopicClusterCard
-                      key={cluster.id}
-                      cluster={cluster}
-                      onViewDetails={setSelectedCluster}
-                      viewMode={viewMode}
-                    />
+                    <div key={cluster.id} className="relative">
+                      <TopicClusterCard
+                        cluster={cluster}
+                        onViewDetails={setSelectedCluster}
+                        viewMode={viewMode}
+                        isBookmarked={bookmarkedClusters.includes(cluster.id)}
+                        onToggleBookmark={() => toggleBookmark(cluster.id)}
+                        onArchive={() => archiveCluster(cluster.id)}
+                      />
+                    </div>
                   ))}
                 </div>
               ) : (
@@ -395,6 +587,43 @@ export const Dashboard: React.FC = () => {
                 </div>
               )}
             </div>
+
+            {/* Archived Clusters Section */}
+            {archivedClusters.length > 0 && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-bold text-slate-700">
+                    Archived Clusters ({archivedClusters.length})
+                  </h2>
+                  <button
+                    onClick={() => setArchivedClusters([])}
+                    className="text-sm text-slate-500 hover:text-slate-700 font-semibold"
+                  >
+                    Clear All Archives
+                  </button>
+                </div>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  {digest.topicClusters
+                    .filter(cluster => archivedClusters.includes(cluster.id))
+                    .map((cluster) => (
+                      <div key={cluster.id} className="glass rounded-xl p-4 opacity-60 hover:opacity-80 transition-opacity">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <Archive className="h-4 w-4 text-slate-500" />
+                          <h4 className="font-semibold text-slate-700 text-sm">{cluster.title}</h4>
+                        </div>
+                        <p className="text-xs text-slate-600">{cluster.summary.substring(0, 100)}...</p>
+                        <button
+                          onClick={() => setArchivedClusters(prev => prev.filter(id => id !== cluster.id))}
+                          className="text-xs text-blue-600 hover:text-blue-800 mt-2 font-semibold"
+                        >
+                          Restore
+                        </button>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div className="glass rounded-2xl shadow-professional border border-slate-200/30 p-12 text-center">
@@ -414,6 +643,8 @@ export const Dashboard: React.FC = () => {
         <DetailModal
           cluster={selectedCluster}
           onClose={() => setSelectedCluster(null)}
+          isBookmarked={bookmarkedClusters.includes(selectedCluster.id)}
+          onToggleBookmark={() => toggleBookmark(selectedCluster.id)}
         />
       )}
 
@@ -422,6 +653,38 @@ export const Dashboard: React.FC = () => {
         <ShareModal
           digest={digest}
           onClose={() => setShowShareModal(false)}
+        />
+      )}
+
+      {/* Schedule Modal */}
+      {showScheduleModal && (
+        <ScheduleModal
+          onClose={() => setShowScheduleModal(false)}
+          onSchedule={(schedule) => {
+            console.log('Scheduled:', schedule);
+            setShowScheduleModal(false);
+            
+            // Add notification
+            const notification = {
+              id: Date.now().toString(),
+              title: 'Report Scheduled',
+              message: `Report scheduled for ${schedule.frequency} delivery`,
+              type: 'success',
+              timestamp: new Date(),
+              read: false
+            };
+            setNotifications(prev => [notification, ...prev.slice(0, 9)]);
+          }}
+        />
+      )}
+
+      {/* Notification Center */}
+      {showNotifications && (
+        <NotificationCenter
+          notifications={notifications}
+          onClose={() => setShowNotifications(false)}
+          onMarkAsRead={markNotificationAsRead}
+          onClearAll={clearAllNotifications}
         />
       )}
     </div>
