@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DailyDigest, ProcessingStatus, TopicCluster, Alert } from '../types';
 import { generateMockDigest, generateMockAlerts, generateMockWeather, generateMockAnalytics } from '../utils/mockData';
+import { generateProfessionalReport } from '../utils/pdfGenerator';
 import { LoadingSpinner } from './LoadingSpinner';
 import { TopicClusterCard } from './TopicClusterCard';
 import { DetailModal } from './DetailModal';
@@ -25,7 +26,6 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { format, subDays, parseISO } from 'date-fns';
-import jsPDF from 'jspdf';
 
 export const Dashboard: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState(format(new Date(), 'yyyy-MM-dd'));
@@ -81,86 +81,7 @@ export const Dashboard: React.FC = () => {
 
   const exportToPDF = () => {
     if (!digest) return;
-
-    const pdf = new jsPDF();
-    const pageHeight = pdf.internal.pageSize.height;
-    let yPosition = 20;
-
-    // Header
-    pdf.setFontSize(20);
-    pdf.text('Police Daily News Digest', 20, yPosition);
-    yPosition += 10;
-    
-    pdf.setFontSize(12);
-    pdf.text(`Date: ${format(new Date(digest.date), 'PPP')}`, 20, yPosition);
-    yPosition += 5;
-    pdf.text(`Generated: ${format(new Date(digest.generatedAt), 'PPp')}`, 20, yPosition);
-    yPosition += 15;
-
-    // Summary
-    pdf.setFontSize(14);
-    pdf.text('Summary', 20, yPosition);
-    yPosition += 10;
-    
-    pdf.setFontSize(10);
-    pdf.text(`Total Articles Processed: ${digest.totalArticles}`, 20, yPosition);
-    yPosition += 5;
-    pdf.text(`Relevant Articles: ${digest.relevantArticles}`, 20, yPosition);
-    yPosition += 5;
-    pdf.text(`Topic Clusters: ${digest.topicClusters.length}`, 20, yPosition);
-    yPosition += 5;
-    pdf.text(`Active Alerts: ${alerts.length}`, 20, yPosition);
-    yPosition += 15;
-
-    // Alerts Section
-    if (alerts.length > 0) {
-      pdf.setFontSize(14);
-      pdf.text('Active Alerts', 20, yPosition);
-      yPosition += 10;
-      
-      alerts.forEach((alert, index) => {
-        if (yPosition > pageHeight - 30) {
-          pdf.addPage();
-          yPosition = 20;
-        }
-        
-        pdf.setFontSize(10);
-        pdf.text(`${index + 1}. ${alert.title} (${alert.priority.toUpperCase()})`, 20, yPosition);
-        yPosition += 5;
-        const descLines = pdf.splitTextToSize(alert.description, 170);
-        pdf.text(descLines, 25, yPosition);
-        yPosition += descLines.length * 5 + 5;
-      });
-      yPosition += 10;
-    }
-
-    // Topic Clusters
-    pdf.setFontSize(14);
-    pdf.text('Topic Clusters', 20, yPosition);
-    yPosition += 10;
-
-    digest.topicClusters.forEach((cluster, index) => {
-      if (yPosition > pageHeight - 50) {
-        pdf.addPage();
-        yPosition = 20;
-      }
-
-      pdf.setFontSize(12);
-      pdf.text(`${index + 1}. ${cluster.title}`, 20, yPosition);
-      yPosition += 8;
-      
-      pdf.setFontSize(10);
-      pdf.text(`Priority: ${cluster.priority.toUpperCase()} | Risk: ${cluster.riskLevel.toUpperCase()}`, 20, yPosition);
-      yPosition += 5;
-      pdf.text(`Districts: ${cluster.affectedDistricts.join(', ')}`, 20, yPosition);
-      yPosition += 5;
-      
-      const summaryLines = pdf.splitTextToSize(cluster.summary, 170);
-      pdf.text(summaryLines, 20, yPosition);
-      yPosition += summaryLines.length * 5 + 10;
-    });
-
-    pdf.save(`police-digest-${digest.date}.pdf`);
+    generateProfessionalReport(digest, alerts);
   };
 
   const dismissAlert = (alertId: string) => {
@@ -232,7 +153,7 @@ export const Dashboard: React.FC = () => {
                   className="flex items-center space-x-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-2 rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
                   <Download className="h-4 w-4" />
-                  <span>Export PDF</span>
+                  <span>Professional Report</span>
                 </button>
               )}
             </div>
