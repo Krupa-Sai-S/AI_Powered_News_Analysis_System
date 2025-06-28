@@ -31,11 +31,11 @@ export const generateProfessionalReport = (digest: DailyDigest, alerts: Alert[])
   pdf.setTextColor(30, 64, 175);
   pdf.text('AP', margin + 7, 20);
   
-  // Header text
+  // Header text - Updated to use "AP STATE POLICE"
   pdf.setFontSize(18);
   pdf.setFont('helvetica', 'bold');
   pdf.setTextColor(255, 255, 255);
-  pdf.text('ANDHRA PRADESH STATE POLICE', margin + 30, 15);
+  pdf.text('AP STATE POLICE', margin + 30, 15);
   
   pdf.setFontSize(10);
   pdf.setFont('helvetica', 'normal');
@@ -285,7 +285,7 @@ export const generateProfessionalReport = (digest: DailyDigest, alerts: Alert[])
     pdf.setLineWidth(0.5);
     pdf.line(margin, pageHeight - 20, pageWidth - margin, pageHeight - 20);
     
-    // Footer text - Updated to use "AP" instead of "ANDHRA PRADESH"
+    // Footer text - Updated to use "AP STATE POLICE"
     pdf.setFontSize(8);
     pdf.setFont('helvetica', 'bold');
     pdf.setTextColor(30, 64, 175);
