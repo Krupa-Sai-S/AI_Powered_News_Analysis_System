@@ -22,136 +22,143 @@ export const generateProfessionalReport = (digest: DailyDigest, alerts: Alert[])
 
   // Helper function to add header on each page
   const addPageHeader = () => {
-    // Header background with AP State colors - MUCH LARGER HEIGHT
+    // MASSIVE HEADER BACKGROUND - MUCH LARGER HEIGHT
     pdf.setFillColor(0, 51, 102); // Deep blue
-    pdf.rect(0, 0, pageWidth, 80, 'F'); // SIGNIFICANTLY INCREASED HEIGHT to 80px
+    pdf.rect(0, 0, pageWidth, 100, 'F'); // INCREASED HEIGHT to 100px (was 80px)
     
-    // State emblem area (placeholder)
+    // State emblem area (placeholder) - REPOSITIONED
     pdf.setFillColor(255, 255, 255);
-    pdf.rect(margin, 15, 30, 30, 'F'); // Larger emblem area
-    pdf.setFontSize(7);
+    pdf.rect(margin, 20, 35, 35, 'F'); // Larger emblem area, moved down
+    pdf.setFontSize(8);
     pdf.setTextColor(0, 51, 102);
-    pdf.text('AP', margin + 12, 28);
-    pdf.text('POLICE', margin + 8, 36);
+    pdf.text('AP', margin + 14, 35);
+    pdf.text('POLICE', margin + 10, 45);
     
-    // LEFT SIDE - Official header text with MUCH MORE SPACING
-    const leftColumnX = margin + 40; // Start position for left text
+    // LEFT SIDE - Official header text with MAXIMUM SPACING
+    const leftColumnX = margin + 45; // More space from emblem
     
-    pdf.setFontSize(16);
+    pdf.setFontSize(18); // Larger font
     pdf.setFont('helvetica', 'bold');
     pdf.setTextColor(255, 255, 255);
-    pdf.text('ANDHRA PRADESH STATE POLICE', leftColumnX, 25); // First line
+    pdf.text('ANDHRA PRADESH STATE POLICE', leftColumnX, 30); // Moved down
+    
+    pdf.setFontSize(11); // Larger font
+    pdf.setFont('helvetica', 'normal');
+    pdf.text('Intelligence Analysis & News Monitoring Division', leftColumnX, 45); // 15px gap
     
     pdf.setFontSize(10);
-    pdf.setFont('helvetica', 'normal');
-    pdf.text('Intelligence Analysis & News Monitoring Division', leftColumnX, 35); // Second line with 10px gap
+    pdf.text('Daily Intelligence Digest Report', leftColumnX, 58); // 13px gap
     
-    pdf.setFontSize(9);
-    pdf.text('Daily Intelligence Digest Report', leftColumnX, 45); // Third line with 10px gap
+    // RIGHT SIDE - Classification and metadata with EXTREME SPACING
+    const rightColumnX = pageWidth - 140; // MUCH MORE space from right edge (was -120, now -140)
     
-    // RIGHT SIDE - Classification and metadata with MAXIMUM SPACING
-    const rightColumnX = pageWidth - 120; // MUCH MORE space from right edge (was -100, now -120)
-    
-    pdf.setFontSize(8);
+    pdf.setFontSize(9); // Larger font
     pdf.setFont('helvetica', 'bold');
-    pdf.text(`Generated: ${format(new Date(), 'dd/MM/yyyy')} IST`, rightColumnX, 20); // First line
+    pdf.text(`Generated: ${format(new Date(), 'dd/MM/yyyy')} IST`, rightColumnX, 25); // Moved down
     
-    pdf.text('CLASSIFICATION: RESTRICTED', rightColumnX, 30); // 10px gap
+    pdf.text('CLASSIFICATION: RESTRICTED', rightColumnX, 40); // 15px gap
     
-    pdf.text('FOR OFFICIAL USE ONLY', rightColumnX, 40); // 10px gap
+    pdf.text('FOR OFFICIAL USE ONLY', rightColumnX, 55); // 15px gap
     
     pdf.setFont('helvetica', 'normal');
-    pdf.text('ANDHRA PRADESH POLICE', rightColumnX, 50); // 10px gap
+    pdf.text('ANDHRA PRADESH POLICE', rightColumnX, 70); // 15px gap
     
-    // Add separator lines for better visual separation
+    // Add multiple separator lines for maximum visual separation
     pdf.setDrawColor(255, 255, 255);
-    pdf.setLineWidth(0.5);
-    // Horizontal separator
-    pdf.line(margin, 65, pageWidth - margin, 65);
-    // Vertical separator between left and right content
-    pdf.line(rightColumnX - 10, 15, rightColumnX - 10, 55);
+    pdf.setLineWidth(1);
     
-    yPosition = 90; // INCREASED to accommodate much larger header (was 70, now 90)
+    // Main horizontal separator
+    pdf.line(margin, 85, pageWidth - margin, 85);
+    
+    // Vertical separator between left and right content
+    pdf.line(rightColumnX - 15, 20, rightColumnX - 15, 75);
+    
+    // Additional decorative lines
+    pdf.setLineWidth(0.5);
+    pdf.line(margin, 82, pageWidth - margin, 82);
+    pdf.line(margin, 88, pageWidth - margin, 88);
+    
+    yPosition = 110; // SIGNIFICANTLY INCREASED to accommodate much larger header (was 90, now 110)
   };
 
   // Add first page header
   addPageHeader();
 
-  // Document title and metadata with better spacing
-  pdf.setFontSize(22);
+  // Document title and metadata with enhanced spacing
+  pdf.setFontSize(24); // Larger title
   pdf.setFont('helvetica', 'bold');
   pdf.setTextColor(0, 51, 102);
   pdf.text('DAILY INTELLIGENCE DIGEST', margin, yPosition);
   
-  pdf.setFontSize(14);
+  pdf.setFontSize(16); // Larger subtitle
   pdf.setTextColor(0, 0, 0);
-  pdf.text('Andhra Pradesh State Police - News Analysis Report', margin, yPosition + 15); // Increased gap
-  yPosition += 35; // More space after title
+  pdf.text('Andhra Pradesh State Police - News Analysis Report', margin, yPosition + 20); // Increased gap
+  yPosition += 45; // More space after title
 
   // Official document metadata box with enhanced spacing
   pdf.setDrawColor(0, 51, 102);
-  pdf.setLineWidth(1.5);
-  pdf.rect(margin, yPosition, contentWidth, 60); // Increased height for better spacing
+  pdf.setLineWidth(2); // Thicker border
+  pdf.rect(margin, yPosition, contentWidth, 70); // Increased height for better spacing
   
   // Inner border for professional look
   pdf.setDrawColor(200, 200, 200);
   pdf.setLineWidth(0.5);
-  pdf.rect(margin + 3, yPosition + 3, contentWidth - 6, 54);
+  pdf.rect(margin + 4, yPosition + 4, contentWidth - 8, 62);
   
-  pdf.setFontSize(12);
+  pdf.setFontSize(14); // Larger header
   pdf.setFont('helvetica', 'bold');
   pdf.setTextColor(0, 51, 102);
-  pdf.text('OFFICIAL DOCUMENT DETAILS', margin + 10, yPosition + 18);
+  pdf.text('OFFICIAL DOCUMENT DETAILS', margin + 12, yPosition + 20);
   
   pdf.setFont('helvetica', 'normal');
   pdf.setTextColor(0, 0, 0);
-  pdf.setFontSize(9);
+  pdf.setFontSize(10); // Larger text
   
-  // Left column with proper spacing
-  pdf.text(`Report Date: ${format(new Date(digest.date), 'EEEE, MMMM do, yyyy')}`, margin + 10, yPosition + 30);
-  pdf.text(`Analysis Period: ${format(new Date(digest.date), 'yyyy-MM-dd')} (24-hour monitoring cycle)`, margin + 10, yPosition + 38);
-  pdf.text(`Generated At: ${format(new Date(digest.generatedAt), 'PPpp')} IST`, margin + 10, yPosition + 46);
-  pdf.text(`Reporting Authority: AP State Police Intelligence Division`, margin + 10, yPosition + 54);
+  // Left column with enhanced spacing
+  pdf.text(`Report Date: ${format(new Date(digest.date), 'EEEE, MMMM do, yyyy')}`, margin + 12, yPosition + 35);
+  pdf.text(`Analysis Period: ${format(new Date(digest.date), 'yyyy-MM-dd')} (24-hour monitoring cycle)`, margin + 12, yPosition + 45);
+  pdf.text(`Generated At: ${format(new Date(digest.generatedAt), 'PPpp')} IST`, margin + 12, yPosition + 55);
+  pdf.text(`Reporting Authority: AP State Police Intelligence Division`, margin + 12, yPosition + 65);
   
-  // Right column with proper spacing - INCREASED SEPARATION
-  const rightDataX = margin + 125; // More separation between columns
-  pdf.text(`Total News Articles Processed: ${digest.totalArticles}`, rightDataX, yPosition + 30);
-  pdf.text(`Operationally Relevant Articles: ${digest.relevantArticles}`, rightDataX, yPosition + 38);
-  pdf.text(`Intelligence Topic Clusters: ${digest.topicClusters.length}`, rightDataX, yPosition + 46);
-  pdf.text(`Districts Under Analysis: ${digest.districts.length}`, rightDataX, yPosition + 54);
+  // Right column with enhanced spacing - MAXIMUM SEPARATION
+  const rightDataX = margin + 140; // Even more separation between columns
+  pdf.text(`Total News Articles Processed: ${digest.totalArticles}`, rightDataX, yPosition + 35);
+  pdf.text(`Operationally Relevant Articles: ${digest.relevantArticles}`, rightDataX, yPosition + 45);
+  pdf.text(`Intelligence Topic Clusters: ${digest.topicClusters.length}`, rightDataX, yPosition + 55);
+  pdf.text(`Districts Under Analysis: ${digest.districts.length}`, rightDataX, yPosition + 65);
   
-  yPosition += 75; // More space after metadata box
+  yPosition += 85; // More space after metadata box
 
   // Executive Summary
-  checkPageBreak(40);
-  pdf.setFontSize(16);
+  checkPageBreak(50);
+  pdf.setFontSize(18); // Larger section header
   pdf.setFont('helvetica', 'bold');
   pdf.setTextColor(0, 51, 102);
   pdf.text('EXECUTIVE SUMMARY', margin, yPosition);
-  yPosition += 20; // Increased spacing
+  yPosition += 25; // Increased spacing
 
-  pdf.setFontSize(10);
+  pdf.setFontSize(11); // Larger body text
   pdf.setFont('helvetica', 'normal');
   pdf.setTextColor(0, 0, 0);
   const summaryText = `This daily intelligence digest presents a comprehensive analysis of ${digest.totalArticles} news articles from regional and national media sources covering Andhra Pradesh. Of these, ${digest.relevantArticles} articles were classified as operationally relevant to state police activities. The automated analysis system identified ${digest.topicClusters.length} distinct intelligence clusters requiring attention, with ${digest.topicClusters.filter(c => c.priority === 'high').length} classified as high priority for immediate action. Coverage encompasses all ${digest.districts.length} operational districts of Andhra Pradesh, with particular emphasis on emerging security patterns, public safety concerns, and operational intelligence requirements.`;
   
   const summaryLines = pdf.splitTextToSize(summaryText, contentWidth);
   pdf.text(summaryLines, margin, yPosition);
-  yPosition += summaryLines.length * 5 + 30; // More space after summary
+  yPosition += summaryLines.length * 6 + 35; // More space after summary
 
   // Critical Alerts Section
   if (alerts.length > 0) {
-    checkPageBreak(40);
-    pdf.setFontSize(16);
+    checkPageBreak(50);
+    pdf.setFontSize(18); // Larger section header
     pdf.setFont('helvetica', 'bold');
     pdf.setTextColor(0, 51, 102);
     pdf.text('CRITICAL ALERTS & IMMEDIATE ACTION ITEMS', margin, yPosition);
-    yPosition += 20; // Increased spacing
+    yPosition += 25; // Increased spacing
 
     alerts.forEach((alert, index) => {
-      checkPageBreak(45);
+      checkPageBreak(55);
       
-      // Alert priority box with better spacing
+      // Alert priority box with enhanced spacing
       const alertColors = {
         high: [255, 235, 235, 220, 38, 38],
         medium: [255, 248, 235, 245, 158, 11],
@@ -160,56 +167,56 @@ export const generateProfessionalReport = (digest: DailyDigest, alerts: Alert[])
       const [bgR, bgG, bgB, borderR, borderG, borderB] = alertColors[alert.priority as keyof typeof alertColors] || alertColors.low;
       
       pdf.setFillColor(bgR, bgG, bgB);
-      pdf.rect(margin, yPosition, contentWidth, 40, 'F'); // Increased height
+      pdf.rect(margin, yPosition, contentWidth, 50, 'F'); // Increased height
       
       pdf.setDrawColor(borderR, borderG, borderB);
-      pdf.setLineWidth(1.5);
-      pdf.rect(margin, yPosition, contentWidth, 40);
+      pdf.setLineWidth(2); // Thicker border
+      pdf.rect(margin, yPosition, contentWidth, 50);
       
-      pdf.setFontSize(11);
+      pdf.setFontSize(12); // Larger alert title
       pdf.setFont('helvetica', 'bold');
       pdf.setTextColor(0, 0, 0);
-      pdf.text(`ALERT ${index + 1}: ${alert.title.toUpperCase()}`, margin + 5, yPosition + 12);
+      pdf.text(`ALERT ${index + 1}: ${alert.title.toUpperCase()}`, margin + 8, yPosition + 15);
       
       pdf.setFont('helvetica', 'normal');
-      pdf.setFontSize(9);
-      pdf.text(`Priority: ${alert.priority.toUpperCase()} | Type: ${alert.type.toUpperCase()}`, margin + 5, yPosition + 20);
-      pdf.text(`Districts: ${alert.districts.join(', ')}`, margin + 5, yPosition + 27);
+      pdf.setFontSize(10);
+      pdf.text(`Priority: ${alert.priority.toUpperCase()} | Type: ${alert.type.toUpperCase()}`, margin + 8, yPosition + 25);
+      pdf.text(`Districts: ${alert.districts.join(', ')}`, margin + 8, yPosition + 35);
       
-      const descLines = pdf.splitTextToSize(alert.description, contentWidth - 10);
-      pdf.text(descLines, margin + 5, yPosition + 34);
+      const descLines = pdf.splitTextToSize(alert.description, contentWidth - 16);
+      pdf.text(descLines, margin + 8, yPosition + 42);
       
       if (alert.actionRequired) {
         pdf.setFont('helvetica', 'bold');
         pdf.setTextColor(220, 38, 38);
-        pdf.text('⚠ IMMEDIATE ACTION REQUIRED', margin + 5, yPosition + 37);
+        pdf.text('⚠ IMMEDIATE ACTION REQUIRED', margin + 8, yPosition + 47);
       }
       
-      yPosition += 45; // Increased spacing between alerts
+      yPosition += 55; // Increased spacing between alerts
     });
-    yPosition += 25; // More space after alerts section
+    yPosition += 30; // More space after alerts section
   }
 
   // District-wise Intelligence Analysis
-  checkPageBreak(40);
-  pdf.setFontSize(16);
+  checkPageBreak(50);
+  pdf.setFontSize(18); // Larger section header
   pdf.setFont('helvetica', 'bold');
   pdf.setTextColor(0, 51, 102);
   pdf.text('DISTRICT-WISE INTELLIGENCE ANALYSIS', margin, yPosition);
-  yPosition += 30; // Increased spacing
+  yPosition += 35; // Increased spacing
 
   digest.topicClusters.forEach((cluster, index) => {
-    checkPageBreak(70);
+    checkPageBreak(80);
     
-    // Cluster header with numbering and better spacing
-    pdf.setFontSize(13);
+    // Cluster header with numbering and enhanced spacing
+    pdf.setFontSize(14); // Larger cluster title
     pdf.setFont('helvetica', 'bold');
     pdf.setTextColor(0, 0, 0);
     pdf.text(`${index + 1}. ${cluster.title.toUpperCase()}`, margin, yPosition);
-    yPosition += 18; // Increased spacing
+    yPosition += 22; // Increased spacing
     
-    // Priority and risk assessment with better spacing
-    pdf.setFontSize(9);
+    // Priority and risk assessment with enhanced spacing
+    pdf.setFontSize(10); // Larger indicators
     pdf.setFont('helvetica', 'bold');
     
     // Priority indicator
@@ -222,7 +229,7 @@ export const generateProfessionalReport = (digest: DailyDigest, alerts: Alert[])
     pdf.setTextColor(pR, pG, pB);
     pdf.text(`PRIORITY: ${cluster.priority.toUpperCase()}`, margin, yPosition);
     
-    // Risk level indicator with proper spacing
+    // Risk level indicator with enhanced spacing
     const riskColors = {
       critical: [220, 38, 38],
       high: [245, 101, 101],
@@ -231,64 +238,64 @@ export const generateProfessionalReport = (digest: DailyDigest, alerts: Alert[])
     };
     const [rR, rG, rB] = riskColors[cluster.riskLevel as keyof typeof riskColors] || [100, 100, 100];
     pdf.setTextColor(rR, rG, rB);
-    pdf.text(`RISK ASSESSMENT: ${cluster.riskLevel.toUpperCase()}`, margin + 100, yPosition); // Increased separation
-    yPosition += 18; // Increased spacing
+    pdf.text(`RISK ASSESSMENT: ${cluster.riskLevel.toUpperCase()}`, margin + 120, yPosition); // Increased separation
+    yPosition += 22; // Increased spacing
     
     // Affected districts
     pdf.setTextColor(0, 0, 0);
     pdf.setFont('helvetica', 'normal');
     pdf.text(`Affected Districts: ${cluster.affectedDistricts.join(', ')}`, margin, yPosition);
-    yPosition += 15; // Increased spacing
+    yPosition += 18; // Increased spacing
     
     // Intelligence summary
     pdf.setFont('helvetica', 'normal');
     const summaryLines = pdf.splitTextToSize(cluster.summary, contentWidth);
     pdf.text(summaryLines, margin, yPosition);
-    yPosition += summaryLines.length * 4 + 15; // Increased spacing
+    yPosition += summaryLines.length * 5 + 18; // Increased spacing
     
-    // Operational metrics with better spacing
-    pdf.setFontSize(8);
+    // Operational metrics with enhanced spacing
+    pdf.setFontSize(9);
     pdf.setFont('helvetica', 'italic');
     pdf.setTextColor(100, 100, 100);
     pdf.text(`Source Articles: ${cluster.articles.length} | Media Sources: ${cluster.trends.sources.join(', ')}`, margin, yPosition);
-    yPosition += 6;
+    yPosition += 8;
     pdf.text(`Sentiment Analysis: ${cluster.trends.sentiment} | Weekly Trend: ${cluster.trends.weeklyTrend}`, margin, yPosition);
-    yPosition += 15; // Increased spacing
+    yPosition += 18; // Increased spacing
     
     // Recommended actions
     if (cluster.actionItems && cluster.actionItems.length > 0) {
-      pdf.setFontSize(10);
+      pdf.setFontSize(11); // Larger action header
       pdf.setFont('helvetica', 'bold');
       pdf.setTextColor(0, 51, 102);
       pdf.text('Recommended Operational Actions:', margin, yPosition);
-      yPosition += 12; // Increased spacing
+      yPosition += 15; // Increased spacing
       
       cluster.actionItems.slice(0, 4).forEach((action, actionIndex) => {
         pdf.setFont('helvetica', 'normal');
         pdf.setTextColor(0, 0, 0);
-        const actionLines = pdf.splitTextToSize(`${actionIndex + 1}. ${action}`, contentWidth - 10);
-        pdf.text(actionLines, margin + 5, yPosition);
-        yPosition += actionLines.length * 4 + 5; // Increased spacing
+        const actionLines = pdf.splitTextToSize(`${actionIndex + 1}. ${action}`, contentWidth - 12);
+        pdf.text(actionLines, margin + 8, yPosition);
+        yPosition += actionLines.length * 5 + 6; // Increased spacing
       });
       
       if (cluster.actionItems.length > 4) {
         pdf.setFont('helvetica', 'italic');
         pdf.setTextColor(100, 100, 100);
-        pdf.text(`... and ${cluster.actionItems.length - 4} additional operational recommendations`, margin + 5, yPosition);
-        yPosition += 10;
+        pdf.text(`... and ${cluster.actionItems.length - 4} additional operational recommendations`, margin + 8, yPosition);
+        yPosition += 12;
       }
     }
     
-    yPosition += 25; // More space between clusters
+    yPosition += 30; // More space between clusters
   });
 
   // Statistical Analysis Summary
-  checkPageBreak(80);
-  pdf.setFontSize(16);
+  checkPageBreak(100);
+  pdf.setFontSize(18); // Larger section header
   pdf.setFont('helvetica', 'bold');
   pdf.setTextColor(0, 51, 102);
   pdf.text('STATISTICAL ANALYSIS & TRENDS', margin, yPosition);
-  yPosition += 30; // Increased spacing
+  yPosition += 35; // Increased spacing
 
   // Enhanced statistics table with better spacing
   const tableData = [
@@ -300,9 +307,9 @@ export const generateProfessionalReport = (digest: DailyDigest, alerts: Alert[])
     ['Media Source Coverage', '6 Major Sources', 'Regional & National', 'Comprehensive Coverage']
   ];
 
-  // Professional table styling with better spacing
-  const cellHeight = 16; // Increased for better spacing
-  const colWidths = [54, 38, 34, 38]; // Adjusted widths
+  // Professional table styling with enhanced spacing
+  const cellHeight = 18; // Increased for better spacing
+  const colWidths = [58, 42, 38, 42]; // Adjusted widths
   let tableY = yPosition;
 
   tableData.forEach((row, rowIndex) => {
@@ -315,7 +322,7 @@ export const generateProfessionalReport = (digest: DailyDigest, alerts: Alert[])
         pdf.rect(cellX, tableY, colWidths[colIndex], cellHeight, 'F');
         pdf.setFont('helvetica', 'bold');
         pdf.setTextColor(255, 255, 255);
-        pdf.setFontSize(9);
+        pdf.setFontSize(10); // Larger header text
       } else {
         // Alternating row colors
         if (rowIndex % 2 === 0) {
@@ -324,30 +331,30 @@ export const generateProfessionalReport = (digest: DailyDigest, alerts: Alert[])
         }
         pdf.setFont('helvetica', 'normal');
         pdf.setTextColor(0, 0, 0);
-        pdf.setFontSize(8);
+        pdf.setFontSize(9); // Larger body text
       }
       
       pdf.setDrawColor(200, 200, 200);
       pdf.rect(cellX, tableY, colWidths[colIndex], cellHeight);
       
       // Text positioning with better vertical centering
-      const textLines = pdf.splitTextToSize(cell, colWidths[colIndex] - 4);
-      pdf.text(textLines, cellX + 2, tableY + 10); // Better vertical centering
+      const textLines = pdf.splitTextToSize(cell, colWidths[colIndex] - 6);
+      pdf.text(textLines, cellX + 3, tableY + 12); // Better vertical centering
       cellX += colWidths[colIndex];
     });
     
     tableY += cellHeight;
   });
 
-  yPosition = tableY + 35; // More space after table
+  yPosition = tableY + 40; // More space after table
 
   // Official Distribution and Authorization
-  checkPageBreak(70);
-  pdf.setFontSize(14);
+  checkPageBreak(80);
+  pdf.setFontSize(16); // Larger section header
   pdf.setFont('helvetica', 'bold');
   pdf.setTextColor(0, 51, 102);
   pdf.text('OFFICIAL DISTRIBUTION', margin, yPosition);
-  yPosition += 20; // Increased spacing
+  yPosition += 25; // Increased spacing
 
   const distributionList = [
     'Director General of Police, Andhra Pradesh',
@@ -363,31 +370,31 @@ export const generateProfessionalReport = (digest: DailyDigest, alerts: Alert[])
   ];
 
   pdf.setFont('helvetica', 'normal');
-  pdf.setFontSize(9);
+  pdf.setFontSize(10); // Larger distribution text
   distributionList.forEach((recipient, index) => {
-    pdf.text(`${index + 1}. ${recipient}`, margin + 5, yPosition);
-    yPosition += 8; // Increased spacing between items
+    pdf.text(`${index + 1}. ${recipient}`, margin + 8, yPosition);
+    yPosition += 10; // Increased spacing between items
   });
 
-  yPosition += 25; // More space before authorization
+  yPosition += 30; // More space before authorization
 
   // Authorization and security classification
-  pdf.setFontSize(10);
+  pdf.setFontSize(12); // Larger authorization header
   pdf.setFont('helvetica', 'bold');
   pdf.setTextColor(0, 51, 102);
   pdf.text('DOCUMENT AUTHORIZATION', margin, yPosition);
-  yPosition += 15; // Increased spacing
+  yPosition += 18; // Increased spacing
 
   pdf.setFont('helvetica', 'normal');
-  pdf.setFontSize(8);
+  pdf.setFontSize(9); // Larger authorization text
   pdf.setTextColor(0, 0, 0);
   pdf.text('This document is generated by the AP State Police Intelligence Analysis System', margin, yPosition);
-  yPosition += 8;
+  yPosition += 10;
   pdf.text('Authorized for official use by sworn law enforcement personnel only', margin, yPosition);
-  yPosition += 8;
+  yPosition += 10;
   pdf.text(`Document ID: APSP-IAS-${format(new Date(), 'yyyyMMdd')}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`, margin, yPosition);
 
-  // Security footer on all pages with proper spacing
+  // Security footer on all pages with enhanced spacing
   const totalPages = pdf.internal.getNumberOfPages();
   for (let i = 1; i <= totalPages; i++) {
     pdf.setPage(i);
@@ -396,15 +403,15 @@ export const generateProfessionalReport = (digest: DailyDigest, alerts: Alert[])
     }
     
     // Footer with proper spacing from bottom
-    pdf.setFontSize(8);
+    pdf.setFontSize(9); // Larger footer text
     pdf.setFont('helvetica', 'bold');
     pdf.setTextColor(0, 51, 102);
-    pdf.text('RESTRICTED - FOR OFFICIAL USE ONLY - ANDHRA PRADESH STATE POLICE', margin, pageHeight - 35);
+    pdf.text('RESTRICTED - FOR OFFICIAL USE ONLY - ANDHRA PRADESH STATE POLICE', margin, pageHeight - 40);
     
     pdf.setFont('helvetica', 'normal');
     pdf.setTextColor(100, 100, 100);
-    pdf.text(`Generated: ${format(new Date(), 'dd/MM/yyyy')} IST | Document Classification: RESTRICTED`, margin, pageHeight - 28);
-    pdf.text(`Page ${i} of ${totalPages}`, pageWidth - 40, pageHeight - 28);
+    pdf.text(`Generated: ${format(new Date(), 'dd/MM/yyyy')} IST | Document Classification: RESTRICTED`, margin, pageHeight - 32);
+    pdf.text(`Page ${i} of ${totalPages}`, pageWidth - 50, pageHeight - 32);
   }
 
   // Save with official naming convention
