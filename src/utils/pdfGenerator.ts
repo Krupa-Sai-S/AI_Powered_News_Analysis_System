@@ -285,7 +285,7 @@ export const generateProfessionalReport = (digest: DailyDigest, alerts: Alert[])
     pdf.setLineWidth(0.5);
     pdf.line(margin, pageHeight - 20, pageWidth - margin, pageHeight - 20);
     
-    // Footer text
+    // Footer text - Updated to use "AP" instead of "ANDHRA PRADESH"
     pdf.setFontSize(8);
     pdf.setFont('helvetica', 'bold');
     pdf.setTextColor(30, 64, 175);
