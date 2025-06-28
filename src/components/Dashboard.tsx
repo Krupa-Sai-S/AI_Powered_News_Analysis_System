@@ -5,6 +5,7 @@ import { generateProfessionalReport } from '../utils/pdfGenerator';
 import { LoadingSpinner } from './LoadingSpinner';
 import { TopicClusterCard } from './TopicClusterCard';
 import { DetailModal } from './DetailModal';
+import { ShareModal } from './ShareModal';
 import { AlertsPanel } from './AlertsPanel';
 import { WeatherWidget } from './WeatherWidget';
 import { AnalyticsChart } from './AnalyticsChart';
@@ -42,6 +43,7 @@ export const Dashboard: React.FC = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [showAlerts, setShowAlerts] = useState(true);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   const processNewsFeed = async (date: string) => {
     setIsProcessing(true);
@@ -98,7 +100,8 @@ export const Dashboard: React.FC = () => {
   };
 
   const shareDigest = () => {
-    alert('Digest sharing feature would be implemented here');
+    if (!digest) return;
+    setShowShareModal(true);
   };
 
   const refreshData = () => {
@@ -411,6 +414,14 @@ export const Dashboard: React.FC = () => {
         <DetailModal
           cluster={selectedCluster}
           onClose={() => setSelectedCluster(null)}
+        />
+      )}
+
+      {/* Share Modal */}
+      {showShareModal && digest && (
+        <ShareModal
+          digest={digest}
+          onClose={() => setShowShareModal(false)}
         />
       )}
     </div>
